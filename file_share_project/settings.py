@@ -136,6 +136,11 @@ LOGIN_URL = 'accounts:login'
 LOGIN_REDIRECT_URL = 'files:home'
 LOGOUT_REDIRECT_URL = 'accounts:login'
 
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Max upload size: 100MB
