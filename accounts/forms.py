@@ -7,4 +7,11 @@ class UserRegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['email']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.username = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user

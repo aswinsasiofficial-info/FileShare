@@ -54,8 +54,8 @@ Django follows the **Model-View-Template (MVT)** architectural pattern:
 ## 5. Core Features & Logic Flow
 
 ### A. Authentication System
-- **Registration**: Uses a custom `UserRegistrationForm` to collect username, email, and password.
-- **Login/Logout**: Leverages Django's built-in `auth` views for session-based security.
+- **Registration**: Uses a custom `UserRegistrationForm` to collect email and password. Behind the scenes, the email is synced to the Django `username` field to maintain compatibility.
+- **Login/Logout**: Leverages Django's built-in `auth` views for session-based security, using Email as the primary identifier.
 - **Access Control**: The `@login_required` decorator protects the home page and management actions.
 
 ### B. File Upload System

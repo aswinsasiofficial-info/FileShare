@@ -89,7 +89,7 @@
                             <div class="text-truncate">
                                 <h6 class="fw-bold mb-1 text-truncate">{{ file.original_name }}</h6>
                                 <div class="text-muted small">
-                                    {{ file.file_size|filesizeformat }} &bull; {{ file.upload_timestamp|naturaltime }}
+                                    {{ file.owner.email }} &bull; {{ file.file_size|filesizeformat }} &bull; {{ file.upload_timestamp|naturaltime }}
                                     {% if file.download_count > 0 %}
                                     &bull; <i class="bi bi-download small"></i> {{ file.download_count }}
                                     {% endif %}

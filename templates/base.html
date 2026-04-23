@@ -59,13 +59,6 @@
                                 <button type="submit" class="nav-link btn btn-link border-0">Logout</button>
                             </form>
                         </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link btn btn-primary text-white ms-2" href="{% url 'accounts:register' %}">Register</a>
-                        </li>
                     {% endif %}
                 </ul>
             </div>
