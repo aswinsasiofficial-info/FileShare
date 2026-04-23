@@ -11,7 +11,7 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='accounts.backends.EmailBackend')
             messages.success(request, f'Account created for {user.username}!')
             return redirect('files:home')
     else:
