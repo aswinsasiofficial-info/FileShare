@@ -5,17 +5,18 @@ A comprehensive guide to the **Fileshare** web application, covering its archite
 ---
 
 ## 1. Project Overview
-**Fileshare** is a secure, modern file-sharing platform built with Python (Django). It allows users to register accounts, upload files of various formats, and generate unique, shareable links for public access.
+**Fileshare** is a secure, modern file-sharing platform built with Python (Django). It allows users to register accounts using only their email, upload files of various formats, and generate unique, shareable links for public access.
 
 ### Key Objectives:
-- Provide a simple, responsive interface for file management.
-- Ensure secure storage and controlled access to files.
-- Enable easy sharing without requiring the recipient to log in.
+- Provide a minimalist, mobile-responsive interface for file management.
+- Ensure secure storage and controlled access to files via unique UUIDs.
+- Enable instant sharing and file previews without complex requirements.
 
 ---
 
 ## 2. Technical Stack
 - **Backend Framework**: Django 6.0.4 (Python)
+- **Authentication**: Custom Email-based Backend (`accounts.backends.EmailBackend`)
 - **Database**: SQLite (Local) / PostgreSQL (Production on Render)
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+), Bootstrap 5
 - **Styling/Icons**: Bootstrap Icons, Custom "Inter Tight" Typography
@@ -53,40 +54,44 @@ Django follows the **Model-View-Template (MVT)** architectural pattern:
 
 ## 5. Core Features & Logic Flow
 
-### A. Authentication System
-- **Registration**: Uses a custom `UserRegistrationForm` to collect email and password. Behind the scenes, the email is synced to the Django `username` field to maintain compatibility.
-- **Login/Logout**: Leverages Django's built-in `auth` views for session-based security, using Email as the primary identifier.
-- **Access Control**: The `@login_required` decorator protects the home page and management actions.
+### A. Authentication System (Email-Only)
+- **Registration**: Users register with just an **Email** and **Password**. The email is automatically synced to the Django `username` field to maintain system compatibility.
+- **Login**: A custom authentication backend allows logging in with either email or username.
+- **Access Control**: Secure session management ensures only owners can delete or manage their files.
 
 ### B. File Upload System
-1. **Drag & Drop**: JavaScript (XHR/Fetch) handles the file selection and upload progress.
-2. **Sanitization**: Filenames are renamed to unique UUIDs on the server to prevent directory traversal attacks and name collisions.
+1. **Drag & Drop**: A JavaScript-powered upload zone provides a real-time progress bar.
+2. **Sanitization**: Files are renamed using UUIDs to prevent path guessing and security vulnerabilities.
 3. **Validation**: Enforces a 100MB file size limit.
 
-### C. Sharing & Public Access
-- **UUID URLs**: Sharing links use the file's UUID (e.g., `/s/d27682b8.../`) instead of predictable integer IDs.
-- **Public View**: A dedicated view (`public_file_view`) allows anyone with the link to see metadata.
-- **Secure Download**: Files are served through a Django view (`download_file`) using `FileResponse`, allowing for future access logic (like expiration checks).
+### C. Sharing & Viewing
+- **UUID URLs**: Sharing links use secure, non-predictable UUIDs.
+- **View Modal**: Users can preview files (with automatic image support) directly on the home page via a popup modal.
+- **Public View**: A compact, mobile-friendly page for public downloads.
+
+### D. Admin Panel
+- **Custom Dashboard**: Superusers can access a dedicated `/accounts/users/` panel to monitor registered users and their file upload counts.
+- **Security**: Restricted to superusers using strict Django decorators.
 
 ---
 
 ## 6. Security Implementation
-- **CSRF Protection**: Prevents Cross-Site Request Forgery on all forms.
-- **Path Protection**: Files are stored in a `media/` directory that is not directly browseable; access is controlled via views.
-- **Password Hashing**: User passwords (and previously share passwords) are hashed using industry-standard algorithms (PBKDF2).
-- **Human-Readable Timestamps**: Uses `django.contrib.humanize` to make timestamps user-friendly.
+- **CSRF Protection**: Enabled for all data submissions and AJAX uploads.
+- **Multiple Backends**: Uses a prioritized `EmailBackend` with the standard `ModelBackend` as a fallback.
+- **Path Protection**: Files are served through Django views, allowing the application to enforce access rules (like expiration).
+- **Human-Readable Timestamps**: Uses `naturaltime` (e.g., "5 minutes ago") for a better user experience.
 
 ---
 
 ## 7. Deployment Configuration
-- **Render.yaml**: Defines the infrastructure, including the web service and a persistent disk to ensure uploaded files aren't lost when the server restarts.
-- **Build.sh**: Automates the installation of dependencies, database migrations, and static file collection.
-- **WhiteNoise**: Configured to serve static files (CSS, JS, Fonts) efficiently in a production environment.
+- **Render.yaml**: Configured for Render's cloud platform, including persistent disk storage for uploaded files.
+- **Build Script**: Automates dependency installation, migrations, and static file collection (`build.sh`).
+- **Production Efficiency**: Uses **WhiteNoise** for high-performance static file serving and **Gunicorn** as the production server.
 
 ---
 
 ## 8. Theoretical Study Concepts
-- **RESTful Principles**: The use of clean URLs and standard HTTP methods (GET for viewing, POST for uploading/deleting).
-- **Session Management**: How Django uses cookies and database sessions to keep users logged in.
-- **Blob Storage**: The concept of handling binary data separately from the relational database metadata.
-- **Middleware**: Using WhiteNoise middleware to intercept requests for static files.
+- **Custom Backends**: Extending Django's authentication system to change how users are identified.
+- **MVT Data Flow**: How data travels from the SQLite database through UUID-filtered views to Bootstrap templates.
+- **Asynchronous UI**: Using JavaScript XHR to handle file uploads without refreshing the page.
+- **Responsive Design**: Implementing mobile-first grid systems to ensure accessibility across all devices.
