@@ -53,6 +53,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
+                        {% if user.is_superuser %}
+                            <li class="nav-item">
+                                <a class="nav-link fw-bold text-primary" href="{% url 'accounts:user_list' %}">
+                                    <i class="bi bi-people-fill"></i> Users
+                                </a>
+                            </li>
+                        {% endif %}
                         <li class="nav-item">
                             <form action="{% url 'accounts:logout' %}" method="post" class="d-inline">
                                 {% csrf_token %}

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Admin Panel - Fileshare{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <div class="d-flex align-items-center justify-content-between mb-4 px-2 px-md-0">
+            <h2 class="fw-bold mb-0">Registered Users</h2>
+            <span class="badge bg-primary rounded-pill">{{ users.count }} Total</span>
+        </div>
+
+        <div class="px-2 px-md-0">
+            <div class="card shadow-sm border-0 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Email</th>
+                                <th>Files</th>
+                                <th>Joined</th>
+                                <th class="pe-4 text-end">Last Login</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in users %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold">{{ u.email }}</div>
+                                    {% if u.is_superuser %}
+                                        <span class="badge bg-info-subtle text-info small border border-info-subtle">Admin</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">{{ u.file_count }}</span>
+                                </td>
+                                <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                                <td class="pe-4 text-end text-muted small">
+                                    {% if u.last_login %}
+                                        {{ u.last_login|naturaltime }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    No users found.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 px-2 px-md-0">
+            <a href="{% url 'files:home' %}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
